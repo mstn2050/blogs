@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132583593-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-132583593-1');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/highlight.min.js"></script>
+    <link rel="stylesheet" href="css/an-old-hope.css">
+    <script>hljs.initHighlightingOnLoad();</script>
+    <title>mstn blogs</title>
+<head>
+<style>
+	.markdown-body {
+		box-sizing: border-box;
+		min-width: 200px;
+		max-width: 980px;
+		margin: 0 auto;
+		padding: 45px;
+	}
+
+	@media (max-width: 767px) {
+		.markdown-body {
+			padding: 15px;
+		}
+	}
+</style>
+<article class="markdown-body">
+<p><a href="https://medium.com/@semanser/is-it-worth-to-learn-vim-in-2018-4798cbf7f2b2">https://medium.com/@semanser/is-it-worth-to-learn-vim-in-2018-4798cbf7f2b2</a> の翻訳</p>
+<p>Vimは非常に人気があり、90年代から広く使われているテキストエディタです。それはプログラマー、作家、システム管理者、DevOps、その他多くのテキストファイルを用いて働く人々によって積極的に使われています。しかし、それは2018年の今、他のモダンなテキストエディタを差し置いて、本当に学ぶべき価値があるものなのでしょうか？</p>
+<h1 id="生産性の向上">生産性の向上</h1>
+<p>これが、私がVimを使う、主な理由です。私はフルタイムJavascriptプログラマーとして、様々なコードファイルと、設定を毎日編集しています。Vimの背景にあるモードによる編集はとてもシンプルでかつ強力です。簡単にいうと、ほとんど全てのテキストの編集アクションを簡単なキーストロークで実現できます。（例： 単語の消去、行の消去、文の選択等）さらに、そのコマンドを繰り返したり、マクロとして登録したりと行った様々なことが行えます。</p>
+<p>Vimを1,2週間使用すると、すべてのアクションは筋肉に記憶されます。テキスト編集やファイルナビゲーションに関連するすべての作業は、1秒未満で実行できます。
+もちろん、生産性はワークフローだけではありません。 Vimはすばらしいパフォーマンスを備えており、非常に高速に読み込むことができます。ベンチマークと他のテキストエディタとの比較については、<a href="https://medium.com/commitlog/why-i-still-use-vim-67afd76b4db6">驚くべき記事</a>の中で見つけることができます。</p>
+<h1 id="学習曲線">学習曲線</h1>
+<p>「Vimを学ぶのは難しすぎる」。Vimに関する最も有名な神話の一つです。しかし、これは事実ではありません。<br>他の全てのツールのように、Vimには独自の学習曲線があります。多くの人々は初めてVimを試した時、Vimに不満を持っています。しかし、これはVimが難しいのではなく、テキストの編集プロセスにおいて一般的に予想が難しいキーバインドを持っているからです。</p>
+<p>実際は、Vimはかなりシンプルで、基本を学ぶだけなら1日でできます。 他のツールと同様に、新しい機能を習得するのが簡単です。約2週間（またはそれ以下）の学習の後、あなたはフルタイムでVimと仕事をすることができます。</p>
+<p>Vimを学ぶには以下が便利です。</p>
+<ul>
+<li><a href="https://openvim.com">openvim.com</a></li>
+<li><a href="http://vim-adventures.com/">vim-adventures.com</a></li>
+<li><a href="https://superuser.com/questions/246487/how-to-use-vimtutor">vimtutor</a></li>
+</ul>
+<h1 id="ideのような振る舞い">IDEのような振る舞い</h1>
+<p>多くの人がモダンなIDEのようにVimを動作させる設定が可能かどうかを尋ねます。あなたがもし、linterのような動作、スマートオートコンプリートやファジー検索のようなツールを使用したい場合はどうすれば良いでしょうか？ それらはすべてプラグインを利用することで可能となります。<br>Vimには素晴らしいコミュニティーサポートがあります。これはさらに強力な無限のプラグインを作りだしています。</p>
+<p>最新のVim設定の例を見るには、<a href="https://www.reddit.com/r/vimporn/">vimporn</a>のサブディレクトリをご覧ください。</p>
+<h1 id="あなたのエディタにvim-modeを導入する">あなたのエディタにvim-modeを導入する</h1>
+<p>これは「真の」Vimを学習するための推奨された方法ではありませんが、XCode、QtDesigner、Sublime Textの設定に傾倒しているものの、Vimを試してみたい場合はどうすれば良いでしょうか？Vim-modeはあなたの現在のエディタとVimの妥協点です。</p>
+<p>いくつかの有名なVimエミュレータを紹介します。</p>
+<ul>
+<li><a href="https://www.sublimetext.com/docs/3/vintage.html">Vintage Mode</a> (sublime)</li>
+<li><a href="https://github.com/VSCodeVim/Vim">VSCodeVim</a> (Visual Studio Code)</li>
+<li><a href="http://doc.qt.io/qtcreator/creator-editor-fakevim.html">FakeVim</a> (Qt Creator)</li>
+<li><a href="http://www.viemu.com/">ViEmu</a> (Visual Studio, Xcode, Word, Outlook)</li>
+</ul>
+<h1 id="終わりに">終わりに</h1>
+<p>Vimは、開発者や作家としてできるベストな投資のひとつです。 Vimを学ぶには数週間しかかかりませんが、長期的な恩恵を受けることができます。これは、あなたの人生の中でのテキスト編集時間を数週間または数ヶ月節約します。</p>
+</article>
+</html>
