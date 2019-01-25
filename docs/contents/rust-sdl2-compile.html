@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132583593-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-132583593-1');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/style.css">
+    <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/github.css">
+
+    <script src="https://mstn2050.github.io/blogs/js/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/an-old-hope.css">
+    <script>hljs.initHighlightingOnLoad();</script>
+    <title>Ubuntu上からrust-sdl2を含んだプロジェクトをwindows向けにコンパイルする</title>
+<head>
+<body background="https://mstn2050.github.io/blogs/images/bg.png" style="margin:0px; padding:0px;">
+
+<div style="background-color: #800080;">
+  <div id="header-img">
+    <a href="https://mstn2050.github.io/blogs"><img class="header-img" src="https://mstn2050.github.io/blogs/images/header.png"></a>
+  </div>
+</div>
+
+<article class="markdown-body" style="background-color:#FFFFFF">
+<p>windows向けのターゲットを探す</p>
+<pre><code class="language-bash">$ rustup target list | grep win
+i586-pc-windows-msvc
+i686-apple-darwin
+i686-pc-windows-gnu
+i686-pc-windows-msvc
+x86_64-apple-darwin
+x86_64-pc-windows-gnu
+x86_64-pc-windows-msvc</code></pre>
+<p>今回はx86_64-pc-windows-gnuを使う。ついでにwingw-w64もインストール</p>
+<pre><code class="language-bash">$ rustup target add x86_64-pc-windows-gnu
+$ sudo apt install mingw-w64</code></pre>
+<p>インストールが終了したらビルド。</p>
+<pre><code class="language-bash"> $ cargo build --target x86_64-pc-windows-gnu</code></pre>
+<p>なんかエラーがいっぱい出た。</p>
+<pre><code>error: linking with `x86_64-w64-mingw32-gcc` failed: exit code: 1
+(略)
+= note: /usr/bin/x86_64-w64-mingw32-ld: cannot find -lSDL2
+        collect2: error: ld returned 1 exit status</code></pre><p>~/.cargo/config に以下のように書けば良いとかいう話が出てきた。</p>
+<pre><code class="language-bash">
+[target.i686-pc-windows-gnu]
+linker = &quot;i686-w64-mingw32-gcc&quot;
+
+[target.x86_64-pc-windows-gnu]
+linker = &quot;x86_64-w64-mingw32-gcc&quot;</code></pre>
+<p>再ビルド</p>
+<pre><code class="language-bash"> $ cargo build --target x86_64-pc-windows-gnu
+error: linking with `x86_64-w64-mingw32-gcc` failed: exit code: 1
+(略)
+= note: /usr/bin/x86_64-w64-mingw32-ld: cannot find -lSDL2
+        collect2: error: ld returned 1 exit status</code></pre>
+<p>無駄だった。</p>
+<p>エラーをよく見たらSDL2が無いとか言ってるのでインストールしてみる。</p>
+<pre><code class="language-bash"># apt-get install -y libsdl2-dev
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+libsdl2-dev is already the newest version (2.0.8+dfsg1-1ubuntu1.18.04.1).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.</code></pre>
+<p>インストール済みだった。</p>
+<p>仕方がないので公式からダウンロード、解凍、必要そうなライブラリたちをコピー。
+version部分は適宜最新版に変えてほしい。</p>
+<pre><code>$ wget https://www.libsdl.org/release/SDL2-devel-2.0.8-mingw.tar.gz
+$ tar xvf SDL2-devel-2.0.8-mingw.tar.gz
+$ cp -r SDL2-2.0.8/x86_64-w64-mingw32/lib/* ~/.multirust/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-pc-windows-gnu/lib/</code></pre><p>再々ビルド。</p>
+<pre><code class="language-bash">$ cargo build --target x86_64-pc-windows-gnu
+ Finished dev [unoptimized + debuginfo] target(s) in 0.27s</code></pre>
+<p>やったぜ。</p>
+<p>releaseオプション等をつけてないのでexeファイルは</p>
+<pre><code class="language-bash">プロジェクト名/target/x86_64-pc-windows-gnu/debug/プロジェクト名.exe</code></pre>
+<p>に配置される。
+このexeファイルと先ほど解凍した</p>
+<pre><code class="language-bash">SDL2-2.0.8/x86_64-w64-mingw32/bin/SDL2.dll</code></pre>
+<p>をwindowsに持っていけば動く。</p>
+</article>
+</body>
+</html>
