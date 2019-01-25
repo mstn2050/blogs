@@ -1,42 +1,6 @@
-<!doctype html>
-<html lang="ja">
-<head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132583593-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'UA-132583593-1');
-    </script>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/style.css">
-
-    <script src="https://mstn2050.github.io/blogs/js/highlight.min.js"></script>
-    <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/an-old-hope.css">
-    <script>hljs.initHighlightingOnLoad();</script>
-    <title>Vimの基本操作</title>
-<head>
-<style>
-	.markdown-body {
-		box-sizing: border-box;
-		min-width: 200px;
-		max-width: 980px;
-		margin: 0 auto;
-		padding: 45px;
-	}
-
-	@media (max-width: 767px) {
-		.markdown-body {
-			padding: 15px;
-		}
-	}
-</style>
-<body background="https://mstn2050.github.io/blogs/images/bg.png">
-<article class="markdown-body" style="background-color:#FFFFFF">
-<h1 id="Vimの基本操作">Vimの基本操作</h1>
+{{title}}:Vimの基本操作
+{{urlname}}:vim-basic-oparation.html
+{{main}}:<h1 id="Vimの基本操作">Vimの基本操作</h1>
 <p>vimrcいじり過ぎてデフォルトの操作方法を忘れつつあるのでメモ</p>
 <p>基本的にノーマルモードからのコマンドです</p>
 <h2 id="ファイル操作">ファイル操作</h2>
@@ -714,6 +678,3 @@
 <td align="right"></td>
 </tr>
 </tbody></table>
-</article>
-</body>
-</html>

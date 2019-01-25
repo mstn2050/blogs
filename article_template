@@ -17,7 +17,7 @@
     <script src="https://mstn2050.github.io/blogs/js/highlight.min.js"></script>
     <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/an-old-hope.css">
     <script>hljs.initHighlightingOnLoad();</script>
-    <title>mstn blogs</title>
+    <title>{{title}}</title>
 <head>
 <style>
 	.markdown-body {
@@ -36,6 +36,7 @@
 </style>
 <body background="https://mstn2050.github.io/blogs/images/bg.png">
 <article class="markdown-body" style="background-color:#FFFFFF">
+{{main}}
 </article>
 </body>
 </html>
