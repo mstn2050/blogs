@@ -1,6 +1,7 @@
 {{title}}:Ubuntu上からrust-sdl2を含んだプロジェクトをwindows向けにコンパイルする
 {{urlname}}:rust-sdl2-compile.html
-{{main}}:<p>windows向けのターゲットを探す</p>
+{{main}}:<h1 id="Ubuntu上からrust-sdl2を含んだプロジェクトをwindows向けにコンパイルする">Ubuntu上からrust-sdl2を含んだプロジェクトをwindows向けにコンパイルする</h1>
+<p>windows向けのターゲットを探す</p>
 <pre><code class="language-bash">$ rustup target list | grep win
 i586-pc-windows-msvc
 i686-apple-darwin
