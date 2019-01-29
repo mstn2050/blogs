@@ -31,8 +31,6 @@
 <article class="markdown-body" style="background-color:#FFFFFF">
 <h1 id="blogs">Blogs</h1>
 {{content}}
-<h1 id="profile">Profile</h1>
-<p>なんか書く</p>
 </article>
 </body>
 </html>
