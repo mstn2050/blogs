@@ -1,34 +1,6 @@
-<!doctype html>
-<html lang="ja">
-<head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132583593-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'UA-132583593-1');
-    </script>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/style.css">
-    <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/github.css">
-
-    <script src="https://mstn2050.github.io/blogs/js/highlight.min.js"></script>
-    <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/an-old-hope.css">
-    <script>hljs.initHighlightingOnLoad();</script>
-    <title>ggezで画像を分割ロードする</title>
-<head>
-<body style="margin:0px; padding:0px;">
-
-<div style="background-color: #000000;">
-  <div id="header-img">
-    <a href="https://mstn2050.github.io/blogs"><img class="header-img" src="https://mstn2050.github.io/blogs/images/header.png"></a>
-  </div>
-</div>
-
-<article class="markdown-body" style="background-color:#FFFFFF">
+{{title}}:ggezで画像を分割ロードする
+{{urlname}}:split-and-load-images-with-rust-ggez.html
+{{main}}:
 <h1 id="ggezで画像を分割ロードする">ggezで画像を分割ロードする</h1>
 <h2 id="今回読み込む素材">今回読み込む素材</h2>
 <p><img src="https://qiita-image-store.s3.amazonaws.com/0/196544/e2cfd372-5b34-b0cc-560b-829ebcc96635.png" alt="3x3shiro.png"><br><a href="https://pipoya.net/sozai/terms-of-use-of-free-materials/">ぴぽや</a>様からお借りしました。</p>
@@ -120,6 +92,3 @@ srcの引数はクロップの開始 x座標、y座標、幅、高さの順。
     path.push(&quot;resources&quot;);
     ctx.filesystem.mount(&amp;path, true);
 }</code></pre>
-</article>
-</body>
-</html>
