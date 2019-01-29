@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132583593-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-132583593-1');
+    </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/style.css">
+    <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/github.css">
+
+    <script src="https://mstn2050.github.io/blogs/js/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://mstn2050.github.io/blogs/css/an-old-hope.css">
+    <script>hljs.initHighlightingOnLoad();</script>
+    <title>ggezで画像を分割ロードする</title>
+<head>
+<body style="margin:0px; padding:0px;">
+
+<div style="background-color: #000000;">
+  <div id="header-img">
+    <a href="https://mstn2050.github.io/blogs"><img class="header-img" src="https://mstn2050.github.io/blogs/images/header.png"></a>
+  </div>
+</div>
+
+<article class="markdown-body" style="background-color:#FFFFFF">
+<h1 id="ggezで画像を分割ロードする">ggezで画像を分割ロードする</h1>
+<h2 id="今回読み込む素材">今回読み込む素材</h2>
+<p><img src="https://qiita-image-store.s3.amazonaws.com/0/196544/e2cfd372-5b34-b0cc-560b-829ebcc96635.png" alt="3x3shiro.png"><br><a href="https://pipoya.net/sozai/terms-of-use-of-free-materials/">ぴぽや</a>様からお借りしました。</p>
+<h2 id="本編">本編</h2>
+<h3 id="ソースコード">ソースコード</h3>
+<p><a href="https://github.com/ggez/ggez/tree/master/examples">ggez公式リポジトリのサンプル</a>をもとに構成する。</p>
+<pre><code class="language-rust">extern crate ggez;
+
+use ggez::conf;
+use ggez::event;
+use ggez::graphics;
+use ggez::{Context, GameResult};
+
+struct MainState {
+    image: graphics::Image,
+}
+
+impl MainState {
+    fn new(ctx: &amp;mut Context) -&gt; GameResult&lt;MainState&gt; {
+        let image = graphics::Image::new(ctx, &quot;/shiro.png&quot;)?;
+        let s = MainState {
+            image,
+        };
+        Ok(s)
+    }
+}
+
+impl event::EventHandler for MainState {
+    fn update(&amp;mut self, _ctx: &amp;mut Context) -&gt; GameResult&lt;()&gt; {
+        Ok(())
+    }
+
+    fn draw(&amp;mut self, ctx: &amp;mut Context) -&gt; GameResult&lt;()&gt; {
+        graphics::clear(ctx);
+        graphics::draw_ex(
+            ctx,
+            &amp;self.image,
+            graphics::DrawParam {
+                src: graphics::Rect::new(0., 0., 120. / 320., 120. / 240.),
+                dest: graphics::Point2::new(0.0, 0.0),
+                .. Default::default()
+            },
+        ).expect(&quot;cannot draw tile&quot;);
+        graphics::present(ctx);
+        Ok(())
+    }
+}
+
+pub fn main() {
+    let c = conf::Conf::new();
+    let ctx = &amp;mut Context::load_from_conf(&quot;super_simple&quot;, &quot;ggez&quot;, c).unwrap();
+    let state = &amp;mut MainState::new(ctx).unwrap();
+    event::run(ctx, state).unwrap();
+}</code></pre>
+<h3 id="実行結果">実行結果</h3>
+<p><img src="https://qiita-image-store.s3.amazonaws.com/0/196544/69b356b2-1f95-425d-3985-0f301e978f50.jpeg" alt="shiroexe.jpg"></p>
+<h3 id="簡単な解説">簡単な解説</h3>
+<h4 id="画像ロード部分">画像ロード部分</h4>
+<pre><code class="language-rust">let image = graphics::Image::new(ctx, &quot;/shiro.png&quot;)?;</code></pre>
+<h4 id="実際の描画">実際の描画</h4>
+<pre><code class="language-rust">graphics::draw_ex(
+    ctx,
+    &amp;self.image,
+    graphics::DrawParam {
+        src: graphics::Rect::new(0., 0., 120. / 320., 120. / 240.),
+        dest: graphics::Point2::new(0.0, 0.0),
+        .. Default::default()
+    },
+).expect(&quot;cannot draw tile&quot;);</code></pre>
+<p>DrawParamでパラメータを渡すためにdraw_exを使用している。
+DrawParamには</p>
+<ul>
+<li>src</li>
+<li>dest</li>
+<li>rotation</li>
+<li>scale</li>
+<li>offset</li>
+<li>shear</li>
+<li>color
+が渡せる。今回はこの内、src(画像のクロップ指定)とdest(画像の描画位置)を指定している。
+srcの引数はクロップの開始 x座標、y座標、幅、高さの順。
+ピクセル数で指定する方法が見当たらなかったのでそれぞれ比率で表現している(今回は320<em>240の画像の左上から120</em>120ピクセルをクロップしている)</li>
+</ul>
+<h2 id="蛇足">蛇足</h2>
+<p><del>ggez本家サンプルに毎回書かれている、resourcesディレクトリを読み込み対象に追加する処理(下記)を書かなくてもresourcesディレクトリから画像がロード出来てしまったのだが、どこかしらでそういう仕様に修正されたのだろうか…？</del>
+環境依存のようです。記述しておいた方が良さそうです。</p>
+<pre><code class="language-rust">if let Ok(manifest_dir) = env::var(&quot;CARGO_MANIFEST_DIR&quot;) {
+    let mut path = path::PathBuf::from(manifest_dir);
+    path.push(&quot;resources&quot;);
+    ctx.filesystem.mount(&amp;path, true);
+}</code></pre>
+</article>
+</body>
+</html>
