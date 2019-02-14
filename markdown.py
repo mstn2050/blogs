@@ -1,3 +1,4 @@
+import os
 import mistune
 import argparse
 import glob
@@ -28,6 +29,12 @@ def main(args):
     with open('rawdata_template') as rawdata:
         rawdata_template = rawdata.read().strip()
 
+    markdown_filename = os.path.basename(args.markdown)
+    markdown_extension = os.path.splitext(markdown_filename)
+    rawdata_template = rawdata_template.replace(
+            '{{urlname}}:',
+            '{{urlname}}:' + markdown_extension[0] + '.html'
+    )
     with open('rawdata/{:08}.txt'.format(num_rawdatas + 1), 'w') as output_rawdata:
         output_rawdata.write(rawdata_template + html)
 
