@@ -1,0 +1,260 @@
+{{title}}:PythonでOCR
+{{urlname}}:ocr_with_python_and_tesseract.html
+{{main}}:<h1>PythonでOCR</h1>
+<h2>概要</h2>
+<p>Googleが開発しているtesseractをpythonから呼び出してOCRをしてみる。</p>
+<h2>環境</h2>
+<ul>
+<li>Ubuntu 16.04</li>
+<li>python 3.x</li>
+<li>pyocr</li>
+<li>tesseract</li>
+</ul>
+<h2>環境構築</h2>
+
+<pre><code class="bash">pip install pyocr
+apt install tesseract-ocr libtesseract-dev tesseract-ocr-jpn</code></pre>
+<p>必要に応じてpip3にしたりsudoつけたり。
+これによって入ってくるtesseractは古いもので精度が悪いことが予想されるので、きちんとやりたい場合はsourceからビルドして入れること。</p>
+<h2>とりあえず動かす</h2>
+
+<pre><code class="Python">import sys
+
+from PIL import Image
+import pyocr
+
+tools = pyocr.get_available_tools()
+assert(len(tools) != 0)
+tool = tools[0]
+
+txt = tool.image_to_string(
+    Image.open('hoge.png'),
+    lang='jpn',
+    builder=pyocr.builders.TextBuilder()
+)
+
+print(txt)</code></pre>
+<h3>結果</h3>
+<h4>入力画像</h4>
+<p><img src="https://mstn2050.github.io/blogs/images/ocr_with_python_and_tesseract/target.png" alt="target.png"></p>
+<h4>出力</h4>
+
+<pre><code class="text">「内部表現の発見ー獲得・学習」, すなわち, さまざま
+な情報が混在し, 雑音で汚れている実世界の観測情報
+から, 本質的な情報やある課題 (群) に必要な情報を抽
+出し, 処理しやすいよぅに表現することは, 人二二知能や
+バターン認識を始めとする知的情幸受処理における古く か
+らの研究課題の一っである. この課題に対して, これま
+でにさまざまなアプローチでの研究が行われてきたが,
+近年, 喜の数が多い階曹的な二ユーラルネッ トヮーク
+〈deep neuraー netw。rk: DNN) によってデータから抽象
+責の高い村部表現を獲得させる方法が, 深曹学習 (deep
+ーearning) と して脚光を浴ぴてぃる. そこで得られた内
+部表現を毛いた手法が, 一般物体認識[斑izhevsky ー2],
+連続音声認識[Dahー ー2], 自然言語処理, 化合物の活性
+予測, などさまざまな分野のコンぺテイショ ンやべンチ
+マークタスクで従来法を大き く引き離す性能をたたきだ
+してぃることがその直接的な理Jである.</code></pre>
+<p>精度ぉ…</p>
+<h2>精度向上</h2>
+<p>どうやらtesseract_layoutを適切に設定すると精度が上がる場合があるらしい。
+ついでにちょっとプログラムを書き換え</p>
+<h3>tesseract_layoutの説明</h3>
+
+<pre><code class="text">0 = Orientation and script detection (OSD) only.
+1 = Automatic page segmentation with OSD.
+2 = Automatic page segmentation, but no OSD, or OCR
+3 = Fully automatic page segmentation, but no OSD. (Default)
+4 = Assume a single column of text of variable sizes.
+5 = Assume a single uniform block of vertically aligned text.
+6 = Assume a single uniform block of text.
+7 = Treat the image as a single text line.
+8 = Treat the image as a single word.
+9 = Treat the image as a single word in a circle.
+10 = Treat the image as a single character.</code></pre>
+<h3>プログラム</h3>
+
+<pre><code class="Python">import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+from PIL import Image
+import pyocr
+import argparse
+
+def main(args: argparse.Namespace) -&gt; None:
+    tools = pyocr.get_available_tools()
+    assert(len(tools) != 0)
+    tool = tools[0]
+
+    txt = tool.image_to_string(
+        Image.open(args.target),
+        lang='jpn',
+        builder=pyocr.builders.TextBuilder(tesseract_layout=6) # ここが重要
+    )
+
+    print(txt)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('target', type=str, help='target image')
+    args = parser.parse_args()
+
+    main(args)</code></pre>
+<h3>ついでにDocker化</h3>
+<p>Dockerfile</p>
+
+<pre><code class="docker">from ubuntu:18.04
+
+MAINTAINER masataka.hisasue &lt;masataka.hisasue@optim.co.jp&gt;
+
+RUN apt update &amp;&amp; \
+    apt install -y libtesseract-dev tesseract-ocr tesseract-ocr-jpn python3 python3-pip &amp;&amp; \
+    pip3 install pyocr
+
+COPY main.py /
+COPY hoge.png /
+
+CMD ["python3", "main.py", "hoge.png"]</code></pre>
+<h4>ビルド</h4>
+
+<pre><code class="bash">docker build -t ocr .</code></pre>
+<h4>実行</h4>
+
+<pre><code class="bash">docker run -it --rm ocr</code></pre>
+<p>基にするubuntuのversionを16.04にするか18.04にするかでaptで入ってくるtesseractのversionが変わり、精度が変わるので注意</p>
+<h3>結果</h3>
+
+<pre><code class="text">内部表現の発見・獲得・学習」 すなわち, さまざま
+な情報が混在し, 雑音で汚れている実世界の観測情報
+から, 本質的な情報やある課題 (群) に必要な情報を抽
+出し, 処理しやすいように表現することは, 人工知能や
+パターン認識を始めとする知的情報処理における古くか
+らの研究課題の一つである. この課題に対して, これま
+でにさまざまなアプローチでの研究が行われてきたが,
+近年, 層の数が多い階層的なニューラルネットワーク
+(deep neural network: DNN) によってデータから抽象
+度の高い内部表現を獲得させる方法が, 深層学習 (deep
+learning) として脚光を浴びている. そこで得られた内
+部表現を用いた手法が, 一般物体認識 [Krizhevsky 121,
+連続音声認識 [Dahl 12], 自然言語処理, 化合物の活性
+予測, などさまざまな分野のコンペティションやベンチ
+マークタスクで従来法を大きく引き離す性能をたたきだ
+していることがその直接的な理由である</code></pre>
+<p>本気出したらめっちゃ精度ええやん</p>
+<h2>単語の位置を取得</h2>
+<h3>単語ごと</h3>
+<h4>プログラム</h4>
+<p>opencvとPIL同居してるけど許して…</p>
+
+<pre><code class="python">import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+import argparse
+
+from PIL import Image
+import pyocr
+import cv2
+
+def main(args: argparse.Namespace) -&gt; None:
+    tools = pyocr.get_available_tools()
+    assert(len(tools) != 0)
+    tool = tools[0]
+
+    result = tool.image_to_string(
+        Image.open(args.target),
+        lang='jpn',
+        builder=pyocr.builders.WordBoxBuilder(tesseract_layout=6)
+    )
+
+    img = cv2.imread(args.target)
+
+    for res in result:
+        print(res.position)
+        print(res.content)
+        cv2.rectangle(img, res.position[0], res.position[1], (0, 0, 255), 1)
+
+    cv2.imshow('', img)
+    key = cv2.waitKey(0)
+    if key &amp; 0xFF == ord('q'):
+        cv2.destroyAllWindows()
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('target', type=str, help='target image')
+    args = parser.parse_args()
+
+    main(args)</code></pre>
+<h4>結果</h4>
+<p>結果画像の一部
+<p><img src="https://mstn2050.github.io/blogs/images/ocr_with_python_and_tesseract/word.png" alt="word.png"></p>
+<p>認識したテキスト</p>
+
+<pre><code class="text">「 内 部 表現 の 発見 ・ 獲 得 ・ 学 習 」 すなわち , さま ざま
+な 情報 が 混在 し , 雑音 で 汚れ て いる 実 世界 の 観測 情報
+か ら , 本 質 的 な 情報 や ある 課題 ( 群 ) に 必要 な 情報 を 抽
+出し , 処理 し や すい よう に 表現 する こと は , 人 工 知能 や
+パタ ー ン 認識 を 始め と する 知 的 情報 処理 に お ける 古く か
+ら の 研究 課題 の 一 つ で ある . この 課題 に 対し て , これ ま
+で に さま ざま な アプ ロー チ で の 研究 が 行わ れ て きた が ,
+近年 , 層 の 数 が 多い 階層 的 な ニュ ー ラ ルネ ットワーク
+(deep neural network: DNN) に よっ て デー タ か ら 抽 象
+度 の 高い 内 部 表現 を 獲得 させ る 方 法 が , 深層 学習 (deep
+learning) と し て 脚光 を 浴び て いる . そこ で 得 ら れ た 内
+部 表現 を 用 いた 手法 が , 一 般 物体 認識 [Krizhevsky 121,
+連続 音声 認識 [Dahl 12], 自然 言語 処理 , 化合 物 の 活性
+予測 , な ど さ ま ざま な 分 野 の コン ペティ ショ ン や ベン チ
+マー クタ スク で 従来 法 を 大 きく 引き 離す 性 能 を た た きだ
+し て いる こと が その 直接 的 な 理由 で ある .</code></pre>
+<h3>行ごと</h3>
+<h4>プログラム</h4>
+<p>18行目の</p>
+
+<pre><code class="python">builder=pyocr.builders.WordBoxBuilder(tesseract_layout=6)</code></pre>
+<p>を</p>
+
+<pre><code class="python">builder=pyocr.builders.LineBoxBuilder(tesseract_layout=6)</code></pre>
+<p>に書き換え</p>
+<h4>結果</h4>
+<p>結果画像の一部
+<p><img src="https://mstn2050.github.io/blogs/images/ocr_with_python_and_tesseract/word.png" alt="word.png"></p>
+<p>テキスト</p>
+
+<pre><code class="text">「 内 部 表現 の 発見 ・ 獲 得 ・ 学 習 」 すなわち , さま ざま
+な 情報 が 混在 し , 雑音 で 汚れ て いる 実 世界 の 観測 情報
+か ら , 本 質 的 な 情報 や ある 課題 ( 群 ) に 必要 な 情報 を 抽
+出し , 処理 し や すい よう に 表現 する こと は , 人 工 知能 や
+パタ ー ン 認識 を 始め と する 知 的 情報 処理 に お ける 古く か
+ら の 研究 課題 の 一 つ で ある . この 課題 に 対し て , これ ま
+で に さま ざま な アプ ロー チ で の 研究 が 行わ れ て きた が ,
+近年 , 層 の 数 が 多い 階層 的 な ニュ ー ラ ルネ ットワーク
+(deep neural network: DNN) に よっ て デー タ か ら 抽 象
+度 の 高い 内 部 表現 を 獲得 させ る 方 法 が , 深層 学習 (deep
+learning) と し て 脚光 を 浴び て いる . そこ で 得 ら れ た 内
+部 表現 を 用 いた 手法 が , 一 般 物体 認識 [Krizhevsky 121,
+連続 音声 認識 [Dahl 12], 自然 言語 処理 , 化合 物 の 活性
+予測 , な ど さ ま ざま な 分 野 の コン ペティ ショ ン や ベン チ
+マー クタ スク で 従来 法 を 大 きく 引き 離す 性 能 を た た きだ
+し て いる こと が その 直接 的 な 理由 で ある .</code></pre>
+<h3>Docker</h3>
+<h4>Dokerfile</h4>
+
+<pre><code class="docker">from ubuntu:18.04
+
+MAINTAINER masataka.hisasue &lt;masataka.hisasue@optim.co.jp&gt;
+
+RUN apt update &amp;&amp; \
+    apt install -y libtesseract-dev tesseract-ocr tesseract-ocr-jpn python3 python3-pip libsm6 libxext6 &amp;&amp; \
+    pip3 install pyocr opencv-python
+
+COPY main.py /
+COPY hoge.png /
+
+CMD ["python3", "main.py", "hoge.png"]</code></pre>
+<h4>ビルド</h4>
+
+<pre><code class="bash">docker build -t ocr_box .</code></pre>
+<h4>実行</h4>
+
+<pre><code class="bash">docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix ocr_box</code></pre>
