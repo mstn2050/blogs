@@ -188,7 +188,7 @@ if __name__ == '__main__':
     main(args)</code></pre>
 <h4>結果</h4>
 <p>結果画像の一部
-<p><img src="https://mstn2050.github.io/blogs/images/ocr_with_python_and_tesseract/word.png" alt="word.png"></p>
+<img src="https://mstn2050.github.io/blogs/images/ocr_with_python_and_tesseract/word.png" alt="word.png"></p>
 <p>認識したテキスト</p>
 
 <pre><code class="text">「 内 部 表現 の 発見 ・ 獲 得 ・ 学 習 」 すなわち , さま ざま
@@ -218,7 +218,7 @@ learning) と し て 脚光 を 浴び て いる . そこ で 得 ら れ た 
 <p>に書き換え</p>
 <h4>結果</h4>
 <p>結果画像の一部
-<p><img src="https://mstn2050.github.io/blogs/images/ocr_with_python_and_tesseract/word.png" alt="word.png"></p>
+<img src="https://mstn2050.github.io/blogs/images/ocr_with_python_and_tesseract/line.png" alt="line.png"></p>
 <p>テキスト</p>
 
 <pre><code class="text">「 内 部 表現 の 発見 ・ 獲 得 ・ 学 習 」 すなわち , さま ざま
