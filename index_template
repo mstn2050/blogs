@@ -33,4 +33,7 @@
 {{content}}
 </article>
 </body>
+<footer id="footer">
+Metisはユーザビリティの改善や分析のためGoogleAnalyticsを使用しています
+</footer>
 </html>
